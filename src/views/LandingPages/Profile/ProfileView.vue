@@ -19,10 +19,12 @@ import setNavPills from "@/assets/js/nav-pills";
 import setMaterialInput from "@/assets/js/material-input";
 
 import MaterialSocialButton from "@/components/MaterialSocialButton.vue";
+import axios from "axios";
 //hook
 onMounted(() => {
   setNavPills();
   setMaterialInput();
+
 });
 </script>
 <template>
@@ -47,15 +49,15 @@ onMounted(() => {
                       <li class="nav-item">
                         <a class="nav-link mb-0 px-0 py-1 active" data-bs-toggle="tab" href="#profile-tabs-simple"
                           role="tab" aria-controls="profile" aria-selected="true">
-                        Thông tin cá nhân
+                          Thông tin cá nhân
                         </a>
                       </li>
-                      <li class="nav-item">
+                      <!-- <li class="nav-item">
                         <a class="nav-link mb-0 px-0 py-1" data-bs-toggle="tab" href="#dashboard-tabs-simple" role="tab"
                           aria-controls="dashboard" aria-selected="false">
-                        Thông tin cư trú
+                          Thông tin cư trú
                         </a>
-                      </li>
+                      </li> -->
                     </ul>
                   </div>
                 </div>
@@ -63,87 +65,93 @@ onMounted(() => {
             </div>
 
 
-            <div class="col-lg-12 mx-0 d-flex justify-content-center flex-column ">
+            <div class="col-lg-12 mx-0 d-flex justify-content-center flex-column">
               <!-- cotent -->
               <div class="tab-content ">
                 <div class="tab-pane fade show active pd-2 " id="profile-tabs-simple" role="tabpanel"
                   aria-labelledby="profile-tab">
                   <!-- ảnh -->
                   <div class="row">
-                    <div class="col-lg-4 mx-auto  border-right ">
+                    <div class="col-lg-4 mx-auto  border-right " v-for="(item) in SinhVien" :key="item.id">
                       <div class="mx-auto img-thumbnail" style="width: 350px; height: 350px;">
-                        <img src="@/assets/img/bruce-mars.jpg" alt="Image" style="max-width: 100%; max-height: 100%;">
+                        <img :src="'../../src/assets/img/' +item.sv.anh3x4" alt="Image" style="max-width: 100%; max-height: 100%;">
+                        
                       </div>
                     </div>
                     <!-- info -->
-                    <div class="col-lg-8 mx-0  ">
+                    <div class="col-lg-8 mx-0" v-for="(item) in SinhVien" :key="item.id">
 
-                      <h4 class="">NGUYỄN HOÀNG VIỆT</h4>
+                      <h4>{{ item.sv.hoten }}</h4>
                       <table class="table">
                         <tbody>
                           <tr>
                             <th scope="row">Ngày sinh</th>
-                            <td>26/02/2001</td>            
+                            <td>{{ item.sv.dob }}</td>
                           </tr>
                           <tr>
                             <th scope="row">Giới tính</th>
-                            <td>JNam</td>  
+                            <td>
+                              <span v-if="item.sv.gioitinh == 1"> Nam </span>
+                              <span v-if="item.sv.gioitinh == 2"> Nữ</span>
+                            </td>
                           </tr>
                           <tr>
                             <th scope="row">Điện thoại sinh viên</th>
-                            <td>0768570252</td>
+                            <td>{{ item.sv.phone }}</td>
                           </tr>
                           <tr>
                             <th scope="row">SV năm</th>
-                            <td>5</td>
+                            <td>{{ item.sv.namhoc }}</td>
                           </tr>
                           <tr>
                             <th scope="row">Sinh viên trường</th>
-                            <td>Đại học Sư Phạm Kỹ Thuật Đà Nẵng</td>
+                            <td>{{ item.name }}</td>
                           </tr>
                           <tr>
-                            <th scope="row">Khoa</th>
-                            <td>Công nghệ số</td>
+                            <th scope="row">Ngành</th>
+                            <td>{{ item.sv.nganhhoc }}</td>
                           </tr>
                           <tr>
                             <th scope="row">Mã sinh viên</th>
-                            <td>1911505310169</td>
-                          </tr><tr>
+                            <td>{{ item.sv.masinhvien }}</td>
+                          </tr>
+                          <tr>
                             <th scope="row">Mã ký túc xá</th>
-                            <td>101A1911505310169</td>
+                            <td>{{ item.sv.id }}</td>
                           </tr>
                           <tr>
                             <th scope="row">Tôn giáo</th>
-                            <td>không</td>
+                            <td>{{ item.sv.tonGiao }}</td>
                           </tr>
+
                           <tr>
-                            <th scope="row">Dân tộc</th>
-                            <td>Kinh</td>
-                          </tr>
-                          <tr>
-                            <th scope="row">Quốc gia</th>
-                            <td>Việt Nam</td>
+                            <th scope="row">Quốc tịch</th>
+                            <td>{{ item.sv.quocTich }}</td>
                           </tr>
                           <tr>
                             <th scope="row">CCCD</th>
-                            <td>1234124123</td>
+                            <td>{{ item.sv.cccd }}</td>
                           </tr>
                           <tr>
                             <th scope="row">Ngày cấp CCCD</th>
-                            <td>20/1/2021</td>
+                            <td>{{ moment(item.sv.ngaycap).format('DD/MM/yyy') }}</td>
                           </tr>
                           <tr>
                             <th scope="row">Nơi cấp CCCD</th>
-                            <td>Huế</td>
+                            <td>{{ item.sv.noicap }}</td>
+                          </tr>
+                          <tr>
+                            <th scope="row">Địa chỉ</th>
+                            <td>{{ item.sv.hoKhauThuongTru }}</td>
                           </tr>
                         </tbody>
-                      </table>
+                      </table> 
                     </div>
                   </div>
 
                 </div>
                 <div class="tab-pane fade" id="dashboard-tabs-simple" role="tabpanel" aria-labelledby="dashboard-tab">
-              
+
                 </div>
               </div>
             </div>
@@ -155,13 +163,43 @@ onMounted(() => {
     </div>
   </section>
 </template>
+<script>
+import moment from 'moment'
+export default {
+  data() {
+    return {
+      SinhVien: [],
+      moment,
+      anh: ''
+    }
+  },
+  methods: {
+    getData() {
+      const userid = localStorage.getItem('userid');
+      axios.get('https://localhost:7252/api/SinhViens/' + userid)
+        .then(respone => {
+          this.SinhVien = respone.data
+          console.log(this.SinhVien)
+        
+        }).catch(error => {
+          console.log(error)
+        })
+    }
+  },
+  mounted() {
+  
+    this.getData();
+  }
 
+}
+</script>
 
 <style>
-.table tbody th{
+.table tbody th {
   font-weight: normal;
 }
-.table tbody tr td{
+
+.table tbody tr td {
   text-transform: uppercase;
   font-weight: bold;
 }

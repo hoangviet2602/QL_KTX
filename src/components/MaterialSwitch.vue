@@ -23,6 +23,7 @@ defineProps({
       type="checkbox"
       :name="id"
       :checked="checked"
+      @click="$emit('update:checked', !checked)"
     />
     <label class="form-check-label d-block" :class="labelClass" :for="id"
       ><slot

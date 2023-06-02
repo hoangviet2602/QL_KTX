@@ -81,11 +81,13 @@ function getClasses(size, success, error) {
       :id="id"
       :type="type"
       class="form-control"
+      
       :class="[getClasses(size, success, error), inputClass]"
       :value="value"
       :placeholder="placeholder"
       :isRequired="isRequired"
       :disabled="isDisabled"
+      
     />
   </div>
 </template>

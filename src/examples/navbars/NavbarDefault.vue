@@ -165,6 +165,8 @@ watch(
               role="button"
               class="nav-link ps-2 d-flex cursor-pointer align-items-center"
               :class="getTextColor()"
+              href="#"
+              @click.prevent="gotoHome"
               id="dropdownMenuPages"
               data-bs-toggle="dropdown"
               aria-expanded="false"
@@ -739,6 +741,28 @@ watch(
                     class="nav-item dropdown dropdown-hover dropdown-subitem list-group-item border-0 p-0">
                     <a
                       class="dropdown-item py-2 ps-3 border-radius-md"
+                      @click.prevent="goToBill">
+                      <div class="d-flex">
+                        <div
+                          class="w-100 d-flex align-items-center justify-content-between">
+                          <div>
+                            <h6 class="dropdown-header text-dark font-weight-bolder d-flex justify-content-cente align-items-center p-0">
+                           Thanh toán phí
+                            </h6>
+                          
+                          </div>
+                          <img
+                            :src="downArrow"
+                            alt="down-arrow"
+                            class="arrow"/>
+                        </div>
+                      </div>
+                    </a>
+                  </li>
+                  <li
+                    class="nav-item dropdown dropdown-hover dropdown-subitem list-group-item border-0 p-0">
+                    <a
+                      class="dropdown-item py-2 ps-3 border-radius-md"
                       href="#" @click.prevent="Logout">
                       <div class="d-flex">
                         <div
@@ -798,9 +822,13 @@ watch(
 </template>
 <script>
 export default {
+  
   methods: {
     goToLogin() {
       this.$router.push('/pages/landing-pages/basic');
+    }, 
+    gotoHome() {
+      this.$router.push('/');
     }, 
     goToRoom() {
       this.$router.push('/pages/landing-pages/room');
@@ -808,18 +836,30 @@ export default {
     goToProfile() {
       this.$router.push('/pages/landing-pages/profile');
     },
+    goToBill() {
+      this.$router.push('/pages/landing-pages/bill');
+    },
     Logout(){
       this.isLoggedIn=false 
+      localStorage.removeItem('token');
+      localStorage.removeItem('userid');
+      this.$router.push('/');
+
     }
   },
   
   data() {
     return {
-      isLoggedIn: true // Khởi tạo biến isLoggedIn với giá trị ban đầu là false
+      isLoggedIn: false, // Khởi tạo biến isLoggedIn với giá trị ban đầu là false
     }
   },
   mounted() {
-    // Thực hiện kiểm tra trạng thái đăng nhập khi load trang
+    const token = localStorage.getItem('token');
+    console.log(token)
+    if (token) {
+      this.isLoggedIn = true;
+    
+    }
     
   }
 }

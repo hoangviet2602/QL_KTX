@@ -27,6 +27,7 @@ import ElTypography from "../layouts/sections/elements/typography/TypographyView
 import RegisterView from "../views/LandingPages/SignIn/RegisterView.vue";
 import ProfileView from "../views/LandingPages/Profile/ProfileView.vue";
 import RoomView from "../views/LandingPages/Profile/RoomView.vue";
+import Bill from "../views/LandingPages/Bill/BillView.vue"
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
@@ -66,6 +67,11 @@ const router = createRouter({
       component: ProfileView,
     },
     {
+      path: "/pages/landing-pages/bill",
+      name: "Bill",
+      component: Bill,
+    },
+    {
       path: "/pages/landing-pages/room",
       name: "room",
       component: RoomView,
@@ -85,6 +91,7 @@ const router = createRouter({
       name: "navigation-navbars",
       component: NavigationNavbars,
     },
+    
     {
       path: "/sections/navigation/nav-tabs",
       name: "navigation-navtabs",
