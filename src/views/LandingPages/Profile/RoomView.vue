@@ -69,6 +69,34 @@ onMounted(() => {
 
                     </div>
                   </div>
+                  <div class="row mt-3">
+                    <div class="col-sm-6">
+                      <label>
+                        <input type="radio" name="check_room" value="option1" v-model="selectedOption" 
+                        @change="handleRadioChange">
+                        Tiếp tục ở phòng cũ
+                      </label>
+                    </div>
+
+                     <div class="col-sm-6">
+                      <label>
+                        <input type="radio" name="check_room" value="option2" v-model="selectedOption" 
+                        @change="handleRadioChange">
+                        Chuyển sang phòng mới
+                      </label>
+                      <div v-if="selectedOption === 'option2'">
+                        <select class="form-select " @change.prevent="SelectKhu">
+                        <option v-for="option in khu" :key="option.idKhu" :value="option.idKhu">{{ option.tenKhu }}
+                        </option>
+                      </select>
+                      <select class="form-select mt-2" @change.prevent="SelectPhong">
+                        <option v-for="option in phongs" :key="option.idPhong" :value="option.idPhong">{{ option.tenphong
+                        }}(Còn trống: {{ option.conTrong }})
+                        </option>
+                      </select>
+                      </div>
+                    </div>
+                  </div>
                   <div class="row col-sm-8 mx-auto d-flex justify-content-center flex-column mt-4">
                     <MaterialButton variant="gradient" color="success" class="w-auto me-2"
                       @click="GiaHanPhong(), showSubform1 = false">Xác nhận</MaterialButton>
@@ -120,7 +148,8 @@ onMounted(() => {
                 <div class="card bg-light w-auto m-3" v-for="item in sinhVienCungPhong" :key="item.id">
                   <div class="info-block">
                     <div class="image-container">
-                      <img :src="'../../src/assets/img/' +item.sv.anh3x4" alt="Image" class="img-fluid rounded-circle" width="80px">
+                      <img :src="'../../src/assets/img/' + item.sv.anh3x4" alt="Image" class="img-fluid rounded-circle"
+                        width="80px">
                     </div>
                     <div class="info-content">
                       <h5>{{ item.sv.hoten }}</h5>
@@ -134,9 +163,12 @@ onMounted(() => {
                 <h4>YÊU CẦU CỦA BẠN</h4>
                 <div class="yeucau-container" v-for="item in paginatedItems" :key="item.idYC">
                   <div class="yeucau">
-                    <p class="yeucau-info" v-if="item.loaiYc == 1">Loại yêu cầu: Chuyển phòng</p>
-                    <p class="yeucau-info" v-if="item.loaiYc == 2">Loại yêu cầu: Gia hạn phòng</p>
-                    <p class="yeucau-info" v-if="item.loaiYc == 3">Loại yêu cầu: Hủy phòng</p>
+                    <p class="yeucau-info" v-if="item.loaiYc == 1">Loại yêu cầu: <b style="color: darkgray;">Chuyển
+                        phòng</b></p>
+                    <p class="yeucau-info" v-if="item.loaiYc == 2">Loại yêu cầu: <b style="color: darkgreen;">Gia hạn
+                        phòng</b></p>
+                    <p class="yeucau-info" v-if="item.loaiYc == 3">Loại yêu cầu: <b style="color: crimson;">Hủy phòng</b>
+                    </p>
 
                     <p class="yeucau-info" v-if="item.status == 0">Trạng thái: Đang chờ</p>
                     <p class="yeucau-info" v-if="item.status == 1">Trạng thái: Đã phê duyệt</p>
@@ -266,12 +298,14 @@ onMounted(() => {
   cursor: pointer;
 
 }
+
 .pagination a.active {
   background-color: #4CAF50;
   color: white;
   border-radius: 5px;
 
 }
+
 .pagination a:hover:not(.active) {
   background-color: #ddd;
   border-radius: 5px;
@@ -308,7 +342,8 @@ export default {
       selectedKi: '',
       selectedKhu: '',
       selectedPhong: '',
-      tenPhong: '',
+      selectedPhongGiaHan:'',
+      tenPhong: 'Bạn chưa được xếp phòng',
       slGiuong: 0,
       conTrong: 0,
       // notification
@@ -319,17 +354,30 @@ export default {
       listRoom: [],
       currentPage: 1, // The current page number
       itemsPerPage: 3, // The number of items to display per page
+      selectedOption: 'option1'
     }
   },
   methods: {
-  
+    handleRadioChange() {
+   
+      console.log('Selected option:', this.selectedOption);
+      console.log(this.RadioPhong())
+
+    },
+    RadioPhong(){
+      if(this.selectedOption === 'option1'){
+          return localStorage.getItem('phongid')
+      }else{
+        return this.selectedPhong
+      }
+    },
     confirmAction() {
-      var currentDate = new Date();
-      var formattedDate =   currentDate.getFullYear()  +  '-0' + (currentDate.getMonth() + 1)  +  '-' + currentDate.getDate()  +'T04:39:48.591Z' ;
+      const currentDate = new Date();
+      const formattedDate = currentDate.toISOString();
       if (confirm("Bạn có chắc muốn gửi yêu cầu hủy phòng không?")) {
         // loaiyc = 3
         axios.post('https://localhost:7252/api/YeuCauPhongs', {
-           thoigiangui: formattedDate,// set df in db
+          thoigiangui: formattedDate,// set df in db
           loaiYc: 3,
           status: 0,
           kiHuyId: this.kihientai[0].idKi,
@@ -368,16 +416,18 @@ export default {
       console.log(this.selectedPhong)
     },
     GiaHanPhong() {
-      var currentDate = new Date();
-      var formattedDate =   currentDate.getFullYear()  +  '-0' + (currentDate.getMonth() + 1)  +  '-' + currentDate.getDate()  +'T04:39:48.591Z' ;
+      const currentDate = new Date();
+      const formattedDate = currentDate.toISOString();
       // loaiyc = 2
+      console.log(formattedDate)
       axios.post('https://localhost:7252/api/YeuCauPhongs', {
-        thoigiangui: formattedDate, 
+        thoigiangui: formattedDate,
         loaiYc: 2,
         status: 0,
         kiGiaHanId: this.selectedKi,
         sinhVienId: localStorage.getItem('userid'),
-        phongId: localStorage.getItem('phongid')
+
+        phongId: this.RadioPhong()
       })
         .then(response => {
           console.log(response.data)
@@ -388,15 +438,15 @@ export default {
         })
     },
     ChuyenPhong() {
-      var currentDate = new Date();
-      var formattedDate =   currentDate.getFullYear()  +  '-0' + (currentDate.getMonth() + 1)  +  '-' + currentDate.getDate()  +'T04:39:48.591Z' ;
-     
+      const currentDate = new Date();
+      const formattedDate = currentDate.toISOString();
+
       // loại yc = 1
       if (localStorage.getItem('phongid') == this.selectedPhong) {
         alert("Phòng chuyển đến trùng với phòng hiện tại");
       } else {
         axios.post('https://localhost:7252/api/YeuCauPhongs', {
-          thoigiangui: formattedDate, 
+          thoigiangui: formattedDate,
           loaiYc: 1,
           status: 0,
           idNewRoom: this.selectedPhong,
@@ -468,6 +518,7 @@ export default {
     axios.get('https://localhost:7252/api/Khus')
       .then(response => {
         console.log(response.data)
+
         this.khu = response.data
       }).catch(error => {
         console.log(error)

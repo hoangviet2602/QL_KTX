@@ -269,7 +269,7 @@ onMounted(() => {
 </template>
 <script>
 import axios from 'axios'
-
+import moment from 'moment';
 export default {
   components: {
     MaterialButton,
@@ -277,7 +277,8 @@ export default {
   },
   data() {
     return {
-      isConfirm: true,
+      moment,
+      isConfirm: false,
       cccdsauimg: null,
       cccdtruocimg: null,
       anh3x4: null,
@@ -392,12 +393,14 @@ export default {
     },
     submitForm(event) {
       event.preventDefault()
-      if(this.code == this.codeFromServer){
+      
+      if(this.code == this.codeFromServer && this.hoten != '' && this.cccd != '' && this.code != ''){
         this.sendFormDataToServer();
       }else{
         this.showNotification('Mã xác nhận không đúng', 'error')
       }
     },
+   
     LayMa(){
       if(this.email == ''){
         this.showNotification('Email trống', 'error')
@@ -406,16 +409,19 @@ export default {
         .then(respone => {
          this.codeFromServer = respone.data 
           console.log(this.codeFromServer)
+          this.showNotification('Đã gửi mã xác nhận', 'success')
         }).catch(error => {
           console.log(error)
         })
       }
     },
     sendFormDataToServer() {
+      const currentDate = new Date().toISOString();
       axios.post('https://localhost:7252/api/DonDangKies', {
         hoten: this.hoten,
         phone: this.phone,
         dob: "2023-05-22T08:51:32.597Z",
+        ngayGui : currentDate,
         status: 0,
         gioitinh: this.selectedGioiTinh,
         namhoc: this.selectedNam,

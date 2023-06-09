@@ -59,25 +59,18 @@ defineProps({
 });
 </script>
 <template>
-  <div
-    class="info-horizontal border-radius-xl d-block d-md-flex"
-    :class="`${color.background ?? ''}`"
-  >
-    <i class="material-icons text-3xl" :class="`text-${icon.color}`">{{
-      icon.component
-    }}</i>
+  <div class="info-horizontal border-radius-xl d-block d-md-flex" :class="[color.background || '']">
+    <i class="material-icons text-3xl" :class="`text-${icon.color}`">{{ icon.component }}</i>
     <div class="ps-0 ps-md-3 mt-3 mt-md-0">
-      <h5 :class="`text-${color.text ?? ''}`">{{ title }}</h5>
-      <p :class="`text-${color.text ?? ''}`">
-        {{ datetime }}
-      </p>
-      <p :class="`text-${color.text ?? ''}`">
-        {{ description }}
-      </p>
+      <h5 :class="`text-${color.text || ''}`">{{ title }}</h5>
+      <p :class="`text-${color.text || ''}`">{{ datetime }}</p>
+      <div class="formatted-description" :class="`text-${color.text || ''}`" v-html="description">
+       
+      </div>
       <a
         :href="action.route"
         class="icon-move-right"
-        :class="`text-${action.label.color ?? 'success'}`"
+        :class="`text-${action.label.color || 'success'}`"
       >
         {{ action.label.text }}
         <i class="fas fa-arrow-right text-sm ms-1"></i>
@@ -85,3 +78,20 @@ defineProps({
     </div>
   </div>
 </template>
+
+<script>
+export default {
+  // Các phần khác trong component
+
+ 
+};
+</script>
+<style>
+.formatted-description {
+  /* Định dạng CSS cho nội dung text */
+  /* Ví dụ: */
+  font-weight: normal;
+  text-decoration: none;
+  color: black;
+}
+</style>

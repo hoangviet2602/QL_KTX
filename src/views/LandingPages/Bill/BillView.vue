@@ -60,7 +60,7 @@ onMounted(() => {
                             </div>
                             <p class="card-category"></p>
                         </template>
-                        <table class="table table-sm table-hover ">
+                        <table >
                             <thead class="thead-light">
                                 <tr>
                                     <th><b>Id</b></th>
@@ -69,7 +69,7 @@ onMounted(() => {
                                     <th><b>Kì</b></th>
                                     <th><b>Tổng tiền</b></th>
                                     <th><b>Trạng thái</b></th>
-                                    <th>#</th>
+                                    <th>Thành Toán</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -82,15 +82,12 @@ onMounted(() => {
                                     <td>{{ item.tongtien.toLocaleString("vi-VN", { style: "currency", currency: "VND", }) }}
                                     </td>
                                     <td>
-                                        <span v-if="item.status == 0" style="color: brown;"> Chưa đóng</span>
-                                        <span v-if="item.status == 1" style="color:darkgreen ;"> Đã đóng</span>
-
+                                        <span v-if="item.status == 0" style="color: darkgreen;"> Chưa đóng</span>
+                                        <span v-if="item.status == 1" > Đã đóng</span>
                                     </td>
                                     <td>
                                         <!-- <button class="btn btn-primary" @click="showDetails = true">Xem chi tiết</button> -->
-
-                                        <button class="btn btn-sm btn-primary">Thanh toán</button>
-
+                                        <button class="btn btn-sm btn-dark" v-if="item.status == 0">Thanh toán</button>
                                     </td>
                                 </tr>
                             </tbody>
@@ -113,7 +110,7 @@ onMounted(() => {
                     <div>
                         <template slot="header">
                             <div class="row">
-                                <p>(*) Giá chỉ số điện: 3.000 VNĐ/kWh - Giá chỉ số nước: 15.000/ m3</p>
+                              
                             </div>
                             <div class="row">
                                 <div class="col-sm-10">
@@ -132,7 +129,7 @@ onMounted(() => {
                             </div>
                             <p class="card-category"></p>
                         </template>
-                        <table class="table table-sm table-hover ">
+                        <table >
                             <thead class="thead-light">
                                 <tr>
                                     <th><b>STT</b></th>
@@ -165,11 +162,11 @@ onMounted(() => {
                                     <td>{{ item.hoaDonTienDienNuoc.gianuoc }}</td>
                                     <td>{{ item.hoaDonTienDienNuoc.tongTien }}</td>
                                     <td>
-                                        <span v-if="item.hoaDonTienDienNuoc.status == 0">Chưa đóng</span>
-                                        <span v-if="item.hoaDonTienDienNuoc.status == 1">Đã đóng</span>
+                                        <span v-if="item.hoaDonTienDienNuoc.status == 0" class="color:blue">Chưa đóng</span>
+                                        <span v-if="item.hoaDonTienDienNuoc.status == 1" >Đã đóng</span>
                                     </td>
                                     <td>
-                                        <button class="btn btn-primary">Thanh toán</button>
+                                        <button class="btn btn-sm btn-dark" v-if="item.hoaDonTienDienNuoc.status == 0">Thanh toán</button>
 
                                     </td>
                                 </tr>
@@ -312,7 +309,7 @@ export default {
                 name: '' + row.idHopDong
             })
                 .then(response => {
-                    console.log(response.data)
+                    this.getData()
                     window.location.href = response.data;
                 }).catch(error => {
                     console.log(error)
@@ -327,6 +324,7 @@ export default {
             })
                 .then(response => {
                     console.log(response.data)
+                    this.getData()
                       window.location.href = response.data;
                 }).catch(error => {
                     console.log(error)
@@ -371,4 +369,40 @@ export default {
 
 
 </script>
-<style></style>
+<style>
+  table {
+    width: 95%;
+    border-collapse: collapse;
+    font-family: Arial, sans-serif;
+    padding-bottom: 10px;
+    margin-left: 20px;
+    margin-right: 20px;
+  }
+  
+  /* Style for table header cells */
+  th {
+    background-color: #f2f2f2;
+    border: 1px solid #ccc;
+    padding: 10px;
+    text-align: left;
+    font-weight: bold;
+    text-align: center;
+  }
+  
+  /* Style for table data cells */
+  td {
+    border: 1px solid #ccc;
+    padding: 12px; 
+    font-weight: bold;
+  }
+  
+  /* Style for table rows (alternating background color) */
+  tr:nth-child(even) {
+    background-color: #f9f9f9;
+  }
+  
+  /* Hover effect for table rows */
+  tr:hover {
+    background-color: #eaeaea;
+  }
+</style>
